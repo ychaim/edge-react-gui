@@ -3,6 +3,7 @@
 import changellyFullLogo from './exchange_logo_changelly.png'
 import changenowFullLogo from './exchange_logo_changenow.png'
 import coinswitchFullLogo from './exchange_logo_coinswitch.png'
+import coinzarkFullLogo from './exchange_logo_coinzark.png'
 import faastFullLogo from './exchange_logo_faast.png'
 import foxExchangeFullLogo from './exchange_logo_fox_exchange.png'
 import godexFullLogo from './exchange_logo_godex.png'
@@ -11,6 +12,7 @@ import totleFullLogo from './exchange_logo_totle.png'
 import changellyLogo from './settingsExchangeChangelly.png'
 import changenowLogo from './settingsExchangeChangenow.png'
 import coinswitchLogo from './settingsExchangeCoinswitch.png'
+import coinzarkLogo from './settingsExchangeCoinZark.png'
 import defaultLogo from './settingsExchangeDefault.png'
 import faastLogo from './settingsExchangeFaast.png'
 import foxExchangeLogo from './settingsExchangeFoxExchange.png'
@@ -28,6 +30,7 @@ export const swapPluginIcons = {
   changelly: changellyLogo,
   changenow: changenowLogo,
   coinswitch: coinswitchLogo,
+  coinzark: coinzarkLogo,
   faast: faastLogo,
   foxExchange: foxExchangeLogo,
   godex: godexLogo,
@@ -40,6 +43,7 @@ export const swapPluginLogos = {
   changelly: changellyFullLogo,
   changenow: changenowFullLogo,
   coinswitch: coinswitchFullLogo,
+  coinzark: coinzarkFullLogo,
   faast: faastFullLogo,
   foxExchange: foxExchangeFullLogo,
   godex: godexFullLogo,
