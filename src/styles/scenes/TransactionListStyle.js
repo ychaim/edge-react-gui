@@ -14,7 +14,12 @@ export const styles = {
     height: THEME.HEADER
   },
   scene: {
-    width: '100%',
+    width: '100%'
+  },
+  sceneIos: {
+    flex: 1
+  },
+  sceneAndroid: {
     height: PLATFORM.usableHeight + PLATFORM.toolbarHeight
   },
   container: {

@@ -152,7 +152,7 @@ export class TransactionList extends Component<Props, State> {
     const isAndroid = PLATFORM.platform === 'android'
     return (
       <SafeAreaView>
-        <View style={styles.scene}>
+        <View style={[styles.scene, isAndroid ? styles.sceneAndroid : styles.sceneIos]}>
           <Gradient style={styles.gradient} />
           <View style={styles.scrollView}>
             <View style={styles.container}>
