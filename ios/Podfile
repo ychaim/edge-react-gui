@@ -57,4 +57,6 @@ target 'edge' do
 
   pod 'react-native-safari-view', :path => '../node_modules/react-native-safari-view'
 
+  pod 'TouchID', :path => '../node_modules/react-native-touch-id'
+
 end

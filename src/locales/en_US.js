@@ -228,6 +228,8 @@ const strings = {
   settings_button_setup_two_factor: 'Setup 2 Factor',
   settings_button_unlock_settings: 'Tap to Unlock Account Settings',
   settings_button_use_touchID: 'Use TouchID',
+  settings_button_use_faceID: 'Use FaceID',
+  settings_button_use_fingerprint_auth: 'Use Fingerprint Authentication',
   settings_days: 'Day(s)',
   settings_denominations_title: 'Denominations',
   settings_custom_nodes_title: 'Custom Nodes',

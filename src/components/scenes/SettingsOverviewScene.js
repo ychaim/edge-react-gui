@@ -4,6 +4,7 @@ import type { EdgeAccount } from 'edge-core-js'
 import React, { Component } from 'react'
 import { Alert, ScrollView, Text, View } from 'react-native'
 import { Actions } from 'react-native-router-flux'
+import TouchID from 'react-native-touch-id'
 
 import * as Constants from '../../constants/indexConstants'
 import s from '../../locales/strings'
@@ -94,6 +95,34 @@ export default class SettingsOverview extends Component<Props, State> {
         text: pluginName.charAt(0).toUpperCase() + pluginName.slice(1),
         routeFunction: Actions[currencyKey]
       })
+    }
+  }
+
+  async componentDidMount () {
+    if (this.props.supportsTouchId) {
+      const { useTouchID } = this.options
+      const changeUseTouchIDText = text => {
+        this.options.useTouchID = {
+          ...useTouchID,
+          text
+        }
+        return this.forceUpdate()
+      }
+      try {
+        const biometryType = await TouchID.isSupported()
+        if (biometryType === 'FaceID') {
+          return changeUseTouchIDText(s.strings.settings_button_use_faceID)
+        }
+        if (biometryType === 'TouchID') {
+          return changeUseTouchIDText(s.strings.settings_button_use_touchID)
+        }
+        if (biometryType) {
+          return changeUseTouchIDText(s.strings.settings_button_use_fingerprint_auth)
+        }
+        return changeUseTouchIDText(s.strings.settings_button_use_touchID)
+      } catch (error) {
+        changeUseTouchIDText(s.strings.settings_button_use_touchID)
+      }
     }
   }
 

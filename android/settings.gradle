@@ -1,4 +1,6 @@
 rootProject.name = 'co.edgesecure.app'
+include ':react-native-touch-id'
+project(':react-native-touch-id').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-touch-id/android')
 include ':disklet'
 project(':disklet').projectDir = new File(rootProject.projectDir, '../node_modules/disklet/android')
 include ':react-native-webview'
