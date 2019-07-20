@@ -119,6 +119,12 @@ export const shiftCryptoCurrency = () => async (dispatch: Dispatch, getState: Ge
     try {
       global.firebase && global.firebase.analytics().logEvent(`Exchange_Shift_Start`)
       const broadcastedTransaction: EdgeTransaction = await quote.approve()
+      const pn = quote.pluginName
+
+      // // set nativeAmount for transaction if a DEX atomic swap (ie Totle), now that tx has already been broadcasted
+      // if (pn === 'totle') {
+      //   broadcastedTransaction.nativeAmount = `-${quote.fromNativeAmount}`
+      // }
       await WALLET_API.saveTransaction(srcWallet, broadcastedTransaction)
 
       const category = sprintf(
@@ -128,7 +134,6 @@ export const shiftCryptoCurrency = () => async (dispatch: Dispatch, getState: Ge
         state.cryptoExchange.toCurrencyCode
       )
       const account = CORE_SELECTORS.getAccount(state)
-      const pn = quote.pluginName
       const si = account.swapConfig[pn].swapInfo
       const name = si.displayName
       const supportEmail = si.supportEmail
@@ -136,6 +141,7 @@ export const shiftCryptoCurrency = () => async (dispatch: Dispatch, getState: Ge
       const payinAddress = broadcastedTransaction.otherParams != null ? broadcastedTransaction.otherParams.payinAddress : ''
       const uniqueIdentifier = broadcastedTransaction.otherParams != null ? broadcastedTransaction.otherParams.uniqueIdentifier : ''
       const isEstimate = quote.isEstimate ? s.strings.estimated_quote : s.strings.fixed_quote
+
       const notes =
         sprintf(
           s.strings.exchange_notes_metadata_generic2,
