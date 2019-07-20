@@ -70,7 +70,7 @@ export const swapPlugins = {
   changenow: { apiKey: ENV.CHANGE_NOW_API_KEY },
   faast: ENV.FAAST_INIT,
   shapeshift: { apiKey: ENV.SHAPESHIFT_API_KEY },
-  foxExchange: { apiKey: ENV.FOX_EXCHANGE_API_KEY }
+  foxExchange: ENV.FOX_INIT
 }
 
 const contextOptions = {
