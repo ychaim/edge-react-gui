@@ -15,6 +15,7 @@ import type { CustomTokenInfo, GuiWallet } from '../../types/types.js'
 import * as UTILS from '../../util/utils'
 import ManageTokenRow from '../common/ManageTokenRow.js'
 import { SceneWrapper } from '../common/SceneWrapper.js'
+import ToggleCheckboxesRow from '../common/ToggleCheckboxesRow'
 
 // Put these in reverse order of preference
 const PREFERRED_TOKENS = ['WINGS', 'HERC', 'REP', 'AGLD']
@@ -36,16 +37,48 @@ export type ManageTokensProps = ManageTokensOwnProps & ManageTokensDispatchProps
 
 export type State = {
   enabledList: Array<string>,
-  combinedCurrencyInfos: Array<EdgeMetaToken>
+  combinedCurrencyInfos: Array<EdgeMetaToken>,
+  isAllToggled: boolean
 }
 
 export default class ManageTokens extends Component<ManageTokensProps, State> {
   constructor (props: ManageTokensProps) {
     super(props)
-    this.state = {
-      enabledList: [...this.props.guiWallet.enabledTokens],
-      combinedCurrencyInfos: []
+    const { enabledTokens } = this.props.guiWallet
+    let isAllToggled = false
+    const allTokenCurrencyCodes = this.gatherAllTokenCodes()
+    if (allTokenCurrencyCodes.length === enabledTokens.length) {
+      isAllToggled = true
     }
+    this.state = {
+      enabledList: [...enabledTokens],
+      combinedCurrencyInfos: [],
+      isAllToggled
+    }
+  }
+
+  gatherAllTokenCodes = () => {
+    const { settingsCustomTokens, guiWallet } = this.props
+    const { metaTokens } = guiWallet
+    const accountMetaTokenInfo = [...settingsCustomTokens]
+    const combinedTokenInfo = UTILS.mergeTokensRemoveInvisible(metaTokens, accountMetaTokenInfo)
+    const allTokenCurrencyCodes = combinedTokenInfo.map(token => token.currencyCode)
+    return allTokenCurrencyCodes
+  }
+
+  toggleAllTokens = () => {
+    const wereAllTokensToggled = this.state.isAllToggled
+    const allTokenCurrencyCodes = this.gatherAllTokenCodes()
+    let newEnabledList = []
+    if (wereAllTokensToggled) {
+      newEnabledList = []
+    } else {
+      newEnabledList = allTokenCurrencyCodes
+    }
+    this.setState({
+      isAllToggled: !wereAllTokensToggled,
+      enabledList: newEnabledList
+    })
   }
 
   toggleToken = (currencyCode: string) => {
@@ -56,28 +89,38 @@ export default class ManageTokens extends Component<ManageTokensProps, State> {
     } else {
       newEnabledList.push(currencyCode)
     }
+    let willAllBeToggled
+    const allTokenCurrencyCodes = this.gatherAllTokenCodes()
+    if (newEnabledList.length === allTokenCurrencyCodes.length) {
+      willAllBeToggled = true
+    } else {
+      willAllBeToggled = false
+    }
     this.setState({
-      enabledList: newEnabledList
+      enabledList: newEnabledList,
+      isAllToggled: willAllBeToggled
     })
   }
 
   saveEnabledTokenList = () => {
-    const { id } = this.props.guiWallet
+    const { setEnabledTokensList, guiWallet } = this.props
+    const { enabledList } = this.state
+    const { id } = guiWallet
     const disabledList: Array<string> = []
     // get disabled list
     for (const val of this.state.combinedCurrencyInfos) {
-      if (this.state.enabledList.indexOf(val.currencyCode) === -1) disabledList.push(val.currencyCode)
+      if (enabledList.indexOf(val.currencyCode) === -1) disabledList.push(val.currencyCode)
     }
-    this.props.setEnabledTokensList(id, this.state.enabledList, disabledList)
+    setEnabledTokensList(id, this.state.enabledList, disabledList)
     Actions.pop()
   }
 
   render () {
+    const { isAllToggled } = this.state
     const { metaTokens, name } = this.props.guiWallet
     const { manageTokensPending } = this.props
     const accountMetaTokenInfo = [...this.props.settingsCustomTokens]
     const combinedTokenInfo = UTILS.mergeTokensRemoveInvisible(metaTokens, accountMetaTokenInfo)
-
     const sortedTokenInfo = combinedTokenInfo.sort((a, b) => {
       if (a.currencyCode < b.currencyCode) return -1
       if (a === b) return 0
@@ -102,6 +145,7 @@ export default class ManageTokens extends Component<ManageTokensProps, State> {
           </View>
           <View style={[styles.metaTokenListArea]}>
             <View style={[styles.metaTokenListWrap]}>
+              <ToggleCheckboxesRow name={s.strings.string_select_all_tokens} toggleAll={this.toggleAllTokens} isAllEnabled={isAllToggled} />
               <FlatList
                 keyExtractor={item => item.currencyCode}
                 data={sortedTokenInfo}
