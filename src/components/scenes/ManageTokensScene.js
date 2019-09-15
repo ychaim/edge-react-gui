@@ -145,8 +145,10 @@ export default class ManageTokens extends Component<ManageTokensProps, State> {
           </View>
           <View style={[styles.metaTokenListArea]}>
             <View style={[styles.metaTokenListWrap]}>
-              <ToggleCheckboxesRow name={s.strings.string_select_all_tokens} toggleAll={this.toggleAllTokens} isAllEnabled={isAllToggled} />
               <FlatList
+                ListHeaderComponent={
+                  <ToggleCheckboxesRow name={s.strings.string_select_all_tokens} toggleAll={this.toggleAllTokens} isAllEnabled={isAllToggled} />
+                }
                 keyExtractor={item => item.currencyCode}
                 data={sortedTokenInfo}
                 renderItem={metaToken => (
