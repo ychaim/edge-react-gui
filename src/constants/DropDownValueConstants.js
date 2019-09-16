@@ -17,6 +17,7 @@ export const ARCHIVE_VALUE = 'archive'
 export const ACTIVATE_VALUE = 'activate'
 export const RESTORE_VALUE = 'restore'
 export const SPLIT_VALUE = 'split'
+export const CHECK_TOKEN_BLANCES_VALUE = 'checkTokenBalances'
 export const EXPORT_WALLET_TRANSACTIONS_VALUE = 'exportWalletTransactions'
 export const MANAGE_TOKENS_VALUE = 'manageTokens'
 export const TRANSACTIONLIST_WALLET_DIALOG_TOP = THEME.HEADER
@@ -69,5 +70,11 @@ export const WALLET_OPTIONS = {
     currencyCode: ['BTC', 'BCH', 'DASH', 'FTC', 'XZC', 'LTC', 'UFO', 'QTUM', 'VTC', 'BTG', 'DGB', 'SMART', 'GRS', 'BSV', 'EBST', 'EOS', 'DOGE', 'RVN', 'RSK'],
     label: s.strings.fragment_wallets_view_xpub,
     modalVisible: true
+  },
+  CHECK_TOKEN_BALANCES: {
+    value: CHECK_TOKEN_BLANCES_VALUE,
+    currencyCodes: ['ETH'],
+    modalVisible: false,
+    label: s.strings.check_token_balances
   }
 }
