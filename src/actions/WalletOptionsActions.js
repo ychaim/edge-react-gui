@@ -11,6 +11,7 @@ import { showError } from '../components/services/AirshipInstance.js'
 import * as Constants from '../constants/indexConstants'
 import s from '../locales/strings.js'
 import * as CORE_SELECTORS from '../modules/Core/selectors.js'
+import { updateEnabledTokens } from '../modules/Core/Wallets/EnabledTokens.js'
 import Text from '../modules/UI/components/FormattedText'
 import * as WALLET_SELECTORS from '../modules/UI/selectors.js'
 import { B } from '../styles/common/textStyles.js'
@@ -226,6 +227,7 @@ export const walletRowOption = (walletId: string, option: string, archived: bool
             try {
               const balance = await coreWallet.otherMethods.checkTokenBalanceExistence(walletAddress, tokenInfo.contractAddress, tokenInfo.currencyCode)
               if (balance && balance !== '0') {
+                await updateEnabledTokens(coreWallet, [tokenInfo.currencyCode])
                 coreWallet.enableTokens([tokenInfo.currencyCode])
               }
               console.log('kylan balance is: ', balance)

@@ -29,14 +29,14 @@ export async function setEnabledTokens (wallet: EdgeCurrencyWallet, tokens: Arra
   return tokens
 }
 
-export async function updateEnabledTokens (wallet: EdgeCurrencyWallet, tokensToEnable: Array<string>, tokensToDisable: Array<string>) {
+export async function updateEnabledTokens (wallet: EdgeCurrencyWallet, tokensToEnable: Array<string>, tokensToDisable?: Array<string>) {
   try {
     const tokensText = await wallet.disklet.getText(ENABLED_TOKENS_FILENAME)
     const enabledTokens = JSON.parse(tokensText)
     const tokensWithNewTokens = _.union(tokensToEnable, enabledTokens)
     const finalTokensToEnable = _.difference(tokensWithNewTokens, tokensToDisable)
     await wallet.enableTokens(finalTokensToEnable)
-    await wallet.disableTokens(tokensToDisable)
+    if (tokensToDisable) await wallet.disableTokens(tokensToDisable)
     await wallet.disklet.setText(ENABLED_TOKENS_FILENAME, JSON.stringify(finalTokensToEnable))
   } catch (e) {
     console.log(e)
