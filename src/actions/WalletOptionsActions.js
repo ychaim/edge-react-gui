@@ -5,7 +5,7 @@ import React from 'react'
 import { Actions } from 'react-native-router-flux'
 import FAIcon from 'react-native-vector-icons/FontAwesome'
 
-import { refreshWallet } from '../actions/WalletActions.js'
+import { getEnabledTokens, refreshWallet } from '../actions/WalletActions.js'
 import { launchModal } from '../components/common/ModalProvider.js'
 import { showError } from '../components/services/AirshipInstance.js'
 import * as Constants from '../constants/indexConstants'
@@ -227,7 +227,11 @@ export const walletRowOption = (walletId: string, option: string, archived: bool
             try {
               const balance = await coreWallet.otherMethods.checkTokenBalanceExistence(walletAddress, tokenInfo.contractAddress, tokenInfo.currencyCode)
               if (balance && balance !== '0') {
+                // updates disklet
                 await updateEnabledTokens(coreWallet, [tokenInfo.currencyCode])
+                // reads disklet and updates redux
+                dispatch(getEnabledTokens(walletId))
+                // enables token on core wallet
                 coreWallet.enableTokens([tokenInfo.currencyCode])
               }
               console.log('kylan balance is: ', balance)

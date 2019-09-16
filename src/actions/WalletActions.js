@@ -183,7 +183,7 @@ export const upsertWallets = (wallets: Array<EdgeCurrencyWallet>) => (dispatch: 
   })
 }
 
-export const setWalletEnabledTokens = (walletId: string, enabledTokens: Array<string>, disabledTokens: Array<string>) => (
+export const setWalletEnabledTokens = (walletId: string, enabledTokens: Array<string>, disabledTokens?: Array<string>) => (
   dispatch: Dispatch,
   getState: GetState
 ) => {
