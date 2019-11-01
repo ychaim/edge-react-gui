@@ -12,6 +12,7 @@ import { launchModal } from '../components/common/ModalProvider.js'
 import { createAddressModal } from '../components/modals/AddressModal.js'
 import {
   ADD_TOKEN,
+  CREATE_WALLET_SELECT_FIAT,
   EDGE_LOGIN,
   EXCHANGE_SCENE,
   EXCLAMATION,
@@ -27,6 +28,7 @@ import {
 } from '../constants/indexConstants.js'
 import s from '../locales/strings.js'
 import * as CORE_SELECTORS from '../modules/Core/selectors.js'
+import { getSupportedWalletTypes } from '../modules/Settings/selectors.js'
 import Text from '../modules/UI/components/FormattedText'
 import { Icon } from '../modules/UI/components/Icon/Icon.ui.js'
 import OptionIcon from '../modules/UI/components/OptionIcon/OptionIcon.ui.js'
@@ -279,9 +281,6 @@ export const privateKeyModalActivated = () => async (dispatch: Dispatch, getStat
     return
   }
   setTimeout(() => {
-    dispatch(sweepPrivateKeyStart())
-    dispatch(secondaryModalActivated())
-
     const state = getState()
     const parsedUri = state.ui.scenes.scan.parsedUri
     if (!parsedUri) return
@@ -293,17 +292,33 @@ export const privateKeyModalActivated = () => async (dispatch: Dispatch, getStat
       spendTargets: []
     }
 
-    edgeWallet.sweepPrivateKeys(spendInfo).then(
-      (unsignedTx: EdgeTransaction) => {
-        edgeWallet
-          .signTx(unsignedTx)
-          .then(signedTx => edgeWallet.broadcastTx(signedTx))
-          .then(() => dispatch(sweepPrivateKeySuccess()))
-      },
-      (error: Error) => {
-        dispatch(sweepPrivateKeyFail(error))
-      }
-    )
+    // if cannot sweep but can import
+    const currencyCode = edgeWallet.currencyInfo.currencyCode
+    const specialCurrencyInfo = getSpecialCurrencyInfo(currencyCode)
+
+    if (specialCurrencyInfo.isSweepPrivateKeySupported) {
+      dispatch(sweepPrivateKeyStart())
+      dispatch(secondaryModalActivated())
+      edgeWallet.sweepPrivateKeys(spendInfo).then(
+        (unsignedTx: EdgeTransaction) => {
+          edgeWallet
+            .signTx(unsignedTx)
+            .then(signedTx => edgeWallet.broadcastTx(signedTx))
+            .then(() => dispatch(sweepPrivateKeySuccess()))
+        },
+        (error: Error) => {
+          dispatch(sweepPrivateKeyFail(error))
+        }
+      )
+    } else if (specialCurrencyInfo.isImportKeySupported && spendInfo.privateKeys && spendInfo.privateKeys.length > 0) {
+      const supportedWalletTypes = getSupportedWalletTypes(state)
+      const selectedWalletType = supportedWalletTypes.find(type => type.currencyCode === currencyCode)
+      Actions[CREATE_WALLET_SELECT_FIAT]({
+        // $FlowFixMe
+        cleanedPrivateKey: spendInfo.privateKeys[0],
+        selectedWalletType
+      })
+    }
   }, 1000)
 }
 

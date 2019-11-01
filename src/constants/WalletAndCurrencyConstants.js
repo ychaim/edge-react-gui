@@ -112,15 +112,21 @@ type SpecialCurrencyInfo = {
 export const SPECIAL_CURRENCY_INFO: SpecialCurrencyInfo = {
   BTC: {
     displayBuyCrypto: true,
-    isImportKeySupported: false
+    isImportKeySupported: false,
+    isSweepPrivateKeySupported: true
   },
   BCH: {
     displayBuyCrypto: true,
-    isImportKeySupported: false
+    isImportKeySupported: false,
+    isSweepPrivateKeySupported: true
   },
   LTC: {
     displayBuyCrypto: true,
-    isImportKeySupported: false
+    isImportKeySupported: false,
+    isSweepPrivateKeySupported: true
+  },
+  BSV: {
+    isSweepPrivateKeySupported: true
   },
   RBTC: {
     dummyPublicAddress: '0x74f9452e22fe58e27575f176fc884729d88267ba', // rj116
