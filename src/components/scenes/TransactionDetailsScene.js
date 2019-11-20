@@ -531,69 +531,10 @@ export class TransactionDetails extends Component<TransactionDetailsProps, State
 
     return (
       <Fragment>
-        <SceneWrapper background="body" bodySplit={scale(24)}>
-          <ScrollView
-            keyboardShouldPersistTaps="handled"
-            ref="_scrollView"
-            scrollEnabled={!this.state.subCategorySelectVisibility}
-            overScrollMode="never"
-            gradientHeight="50%"
-          >
-            <View style={styles.container}>
-              <PayeeIcon direction={this.state.direction} thumbnailPath={this.state.thumbnailPath} />
-              <View style={styles.payeeNameArea}>
-                <View style={styles.payeeNameWrap}>
-                  <TextInput
-                    underlineColorAndroid={'transparent'}
-                    autoCapitalize="words"
-                    onFocus={this.onFocusPayee}
-                    autoCorrect={false}
-                    style={[styles.payeeNameInput, inputBottomPadding()]}
-                    placeholder={s.strings.transaction_details_payee}
-                    defaultValue={this.state.payeeName}
-                    placeholderTextColor={THEME.COLORS.GRAY_2}
-                  />
-                </View>
-              </View>
-              <View style={styles.payeeSeperator} />
-              <View style={styles.dateWrap}>
-                <FormattedText style={styles.date}>{this.state.displayDate}</FormattedText>
-              </View>
-              <AmountArea
-                edgeTransaction={this.props.edgeTransaction}
-                onChangeNotesFxn={this.onChangeNotes}
-                onChangeCategory={this.onChangeCategory}
-                onChangeFiatFxn={this.onChangeFiat}
-                onBlurFiatFxn={this.onBlurFiat}
-                onPressFxn={this.onSaveTxDetails}
-                fiatCurrencyCode={this.guiWallet.fiatCurrencyCode}
-                cryptoCurrencyCode={this.props.edgeTransaction.currencyCode}
-                fiatCurrencySymbol={this.fiatSymbol}
-                fiatAmount={this.state.amountFiat}
-                onEnterSubcategories={this.onEnterSubcategories}
-                subCategorySelectVisibility={this.state.subCategorySelectVisibility}
-                categorySelectVisibility={this.state.categorySelectVisibility}
-                onSelectSubCategory={this.onSelectSubCategory}
-                category={this.state.category}
-                subCategory={this.state.subCategory}
-                categories={categories}
-                onEnterCategories={this.onEnterCategories}
-                onExitCategories={this.onExitCategories}
-                onSubcategoryKeyboardReturn={this.onSubcategoriesKeyboardReturn}
-                onNotesKeyboardReturn={this.onNotesKeyboardReturn}
-                onFocusNotes={this.onFocusNotes}
-                onBlurNotes={this.onBlurNotes}
-                direction={this.state.direction}
-                color={categoryColor}
-                onFocusFiatAmount={this.onFocusFiatAmount}
-                walletDefaultDenomProps={this.state.walletDefaultDenomProps}
-                openModalFxn={this.amountAreaOpenModal}
-                guiWallet={this.guiWallet}
-                onPressAdvancedDetailsButton={this.onPressAdvancedDetailsButton}
-                txExplorerUrl={txExplorerLink}
-              />
-            </View>
-          </ScrollView>
+        <SceneWrapper bodySplit={scale(24)}>
+          <View style={styles.container}>
+            <View style={styles.tileContainer}></View>
+          </View>
         </SceneWrapper>
         {this.state.contactSearchVisibility && this.renderPayeeSearch()}
         {this.state.subCategorySelectVisibility && this.renderCategorySearch()}

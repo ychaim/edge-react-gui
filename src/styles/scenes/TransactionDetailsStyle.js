@@ -10,11 +10,10 @@ export const activeOpacity = THEME.OPACITY.ACTIVE
 
 export const styles = {
   container: {
-    alignItems: 'stretch',
-    backgroundColor: THEME.COLORS.WHITE,
-    flexDirection: 'column',
-    marginTop: scale(24),
-    paddingTop: scale(32)
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    padding: 15
   },
   searchPopup: {
     backgroundColor: THEME.COLORS.WHITE,
@@ -368,6 +367,12 @@ export const styles = {
   },
   txIDIcon: {
     color: THEME.COLORS.SECONDARY
+  },
+  tileContainer: {
+    width: '100%',
+    height: 50,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 2
   }
 }
 

@@ -261,6 +261,7 @@ export default class Main extends Component<Props> {
               renderTitle={this.renderTitle(TRANSACTION_DETAILS)}
               renderLeftButton={this.renderBackButton()}
               renderRightButton={this.renderMenuButton()}
+              hideTabBar
             />
 
             <Drawer key={Constants.EDGE} hideNavBar contentComponent={ControlPanel} hideDrawerButton={true} drawerPosition="right" drawerWidth={scale(280)}>
