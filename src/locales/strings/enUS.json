@@ -489,7 +489,7 @@
   "trying_to_find": "Searching for the best exchange rate...",
   "exchange_will_be_sent": "%1$s %2$s will be sent",
   "exchange_will_be_received": "%1$s %2$s will be received",
-  "mining_fee": "Mining Fee",
+  "mining_fee": "Maximum network fee",
   "confirm_to_complete_exchange": "Confirm to complete your exchange.",
   "kyc_title": "Customer Information Needed",
   "kyc_message": "The available exchange for this transaction requires a ShapeShift account. Please create an account to continue.",
@@ -540,5 +540,6 @@
   "buy_sell_crypto_no_plugin_region": "We're sorry but there are no available plugins for your region.",
   "user_closed_modal_no_wallet": "User closed modal. No wallet was selected",
   "plugin_spend_notes_generic": "Spent %1$s from %2$s to %3$s at address: %4$s \nFor assistance, please contact %5$s.",
-  "plugin_provider_disclaimer": "The following services are not provided by Edge. \n\nFor issues and feedback please contact the respective service providers."
+  "plugin_provider_disclaimer": "The following services are not provided by Edge. \n\nFor issues and feedback please contact the respective service providers.",
+  "no_exchange_rate": "No Exchange Rate"
 }
