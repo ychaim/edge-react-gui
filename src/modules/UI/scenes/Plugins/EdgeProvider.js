@@ -447,7 +447,12 @@ export class EdgeProvider extends Bridgeable {
         },
         body: signedTransaction
       }
+      console.log('kylan signedTransaction: ', signedTransaction)
+      console.log('kylan body: ', body)
       const signedTransactionResponse = await window.fetch(newURL, request)
+      const signedTransactionData = await signedTransactionResponse.json()
+      console.log('kylan signedTransactionResponse: ', signedTransactionResponse)
+      console.log('kylan signedTransactionData: ', signedTransactionData)
       if (signedTransactionResponse.status === 400) {
         throw new Error('Could not complete transaction. Code: 470')
       }
