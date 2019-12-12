@@ -1,9 +1,7 @@
 // @flow
 
 import { type EdgeAccount, type EdgeCurrencyInfo } from 'edge-core-js/types'
-import { Platform } from 'react-native'
 import Locale from 'react-native-locale'
-import PushNotification from 'react-native-push-notification'
 import { Actions } from 'react-native-router-flux'
 import { sprintf } from 'sprintf-js'
 
@@ -30,7 +28,7 @@ import {
   SYNCED_ACCOUNT_TYPES
 } from '../Core/Account/settings.js'
 import * as CORE_SELECTORS from '../Core/selectors'
-import { updateWalletsRequest } from '../Core/Wallets/action.js'
+import { updateWalletsEnabledTokens, updateWalletsRequest } from '../Core/Wallets/action.js'
 
 const localeInfo = Locale.constants() // should likely be moved to login system and inserted into Redux
 
@@ -67,13 +65,6 @@ export const initializeAccount = (account: EdgeAccount, touchIdInfo: Object) => 
 
   const state = getState()
   const context = CORE_SELECTORS.getContext(state)
-  if (Platform.OS === Constants.IOS) {
-    PushNotification.configure({
-      onNotification: notification => {
-        console.log('NOTIFICATION:', notification)
-      }
-    })
-  }
   let accountInitObject = {
     account: account,
     touchIdInfo: touchIdInfo,
@@ -181,11 +172,13 @@ export const initializeAccount = (account: EdgeAccount, touchIdInfo: Object) => 
     if (account.newAccount) {
       await saveCreationReason(account)
     }
-    dispatch(updateWalletsRequest())
-    activeWalletIds.forEach(walletId => {
-      dispatch(getEnabledTokens(walletId))
-    })
+    await updateWalletsRequest()(dispatch, getState)
+    for (const wId of activeWalletIds) {
+      await getEnabledTokens(wId)(dispatch, getState)
+    }
+    updateWalletsEnabledTokens(getState)
   } catch (error) {
+    console.log(error)
     showError(error)
   }
 }
