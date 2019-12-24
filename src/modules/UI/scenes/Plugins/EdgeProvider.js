@@ -448,6 +448,22 @@ export class EdgeProvider extends Bridgeable {
         body: signedTransaction
       }
       const signedTransactionResponse = await window.fetch(newURL, request)
+      console.log('Bity signedTransactionResponse:', signedTransactionResponse)
+      console.log('Bity orderData:', orderData)
+      console.log('Bity signedTransaction:', signedTransaction)
+      console.log('Bity request:', request)
+      this._dispatch({
+        type: 'VENDOR_PLUGIN_LOGS',
+        data: {
+          vendor: 'Bity',
+          logs: [
+            `Bity orderData:, ${JSON.stringify(orderData)}`,
+            `Bity signedTransaction:, ${JSON.stringify(signedTransaction)}`,
+            `Bity request:, ${JSON.stringify(request)}`,
+            `Bity signedTransactionResponse: , ${JSON.stringify(signedTransactionResponse)}`,
+          ]
+        }
+      })
       if (signedTransactionResponse.status === 400) {
         throw new Error('Could not complete transaction. Code: 470')
       }

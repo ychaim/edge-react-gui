@@ -215,3 +215,4 @@ export type Action =
       data: { walletId: string, tokens: Array<string> }
     }
   | { type: 'WALLET_ACCOUNT_ACTIVATION_ESTIMATE_ERROR', data: string }
+  | { type: 'VENDOR_PLUGIN_LOGS', data: { vendor: string, logs: Array<string> } }
