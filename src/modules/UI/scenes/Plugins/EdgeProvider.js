@@ -23,6 +23,7 @@ import { Icon } from '../../../../modules/UI/components/Icon/Icon.ui.js'
 import type { GuiMakeSpendInfo } from '../../../../reducers/scenes/SendConfirmationReducer.js'
 import type { Dispatch, State } from '../../../../types/reduxTypes.js'
 import type { BuySellPlugin, GuiWallet } from '../../../../types/types.js'
+import * as LOGGER from '../../../../util/logger'
 import { trackConversion, trackEvent } from '../../../../util/tracking.js'
 import * as CORE_SELECTORS from '../../../Core/selectors.js'
 import * as UI_SELECTORS from '../../../UI/selectors.js'
@@ -448,6 +449,9 @@ export class EdgeProvider extends Bridgeable {
         body: signedTransaction
       }
       const signedTransactionResponse = await window.fetch(newURL, request)
+      LOGGER.log('Bity signedTransaction: ', JSON.stringify(signedTransaction))
+      LOGGER.log('Bity transaction message body: ', JSON.stringify(body))
+      LOGGER.log('Bity signedTransactionResponse: ', JSON.stringify(signedTransactionResponse))
       if (signedTransactionResponse.status === 400) {
         throw new Error('Could not complete transaction. Code: 470')
       }
