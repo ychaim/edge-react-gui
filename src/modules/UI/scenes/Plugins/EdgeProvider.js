@@ -23,7 +23,6 @@ import { Icon } from '../../../../modules/UI/components/Icon/Icon.ui.js'
 import type { GuiMakeSpendInfo } from '../../../../reducers/scenes/SendConfirmationReducer.js'
 import type { Dispatch, State } from '../../../../types/reduxTypes.js'
 import type { BuySellPlugin, GuiWallet } from '../../../../types/types.js'
-import * as LOGGER from '../../../../util/logger'
 import { trackConversion, trackEvent } from '../../../../util/tracking.js'
 import * as CORE_SELECTORS from '../../../Core/selectors.js'
 import * as UI_SELECTORS from '../../../UI/selectors.js'
@@ -363,11 +362,15 @@ export class EdgeProvider extends Bridgeable {
     return transaction
   }
 
+  // log body and signature and pubic address and final message (returned from signMessage)
+  // log response afterwards line 451
   async signMessage (message: string) /* EdgeSignedMessage */ {
+    console.log('signMessage message: ', JSON.stringify(message))
     const guiWallet = UI_SELECTORS.getSelectedWallet(this._state)
     const coreWallet = CORE_SELECTORS.getWallet(this._state, guiWallet.id)
-
+    console.log('signMessage public address: ', guiWallet.receiveAddress.publicAddress)
     const signedMessage = await coreWallet.otherMethods.signMessageBase64(message, guiWallet.receiveAddress.publicAddress)
+    console.log('signMessage signedMessage: ', JSON.stringify(signedMessage))
     return signedMessage
   }
 
@@ -420,55 +423,64 @@ export class EdgeProvider extends Bridgeable {
     return SafariView.isAvailable()
   }
 
+  // window.fetch.catch(console log then throw)
   async deprecatedAndNotSupportedDouble (request: Object, url: string, url2: string): Promise<mixed> {
-    const response = await window.fetch(url, request)
-    if (response.status !== 201) {
-      const errorData = await response.json()
-      throw new Error(errorData.errors[0].code + ' ' + errorData.errors[0].message)
-    }
-    const newURL = url2 + response.headers.get('Location')
-    const request2 = {
-      method: 'GET',
-      credentials: 'include'
-    }
-    const response2 = await window.fetch(newURL, request2)
-    if (response2.status !== 200) {
-      throw new Error('Problem confirming order: Code n200')
-    }
-    const orderData = await response2.json()
-    if (orderData.message_to_sign) {
-      const { signature_submission_url, body } = orderData.message_to_sign
-      const signedTransaction = await this.signMessage(body)
-      const newURL = url2 + signature_submission_url
-      const request = {
-        method: 'POST',
-        headers: {
-          Host: 'exchange.api.bity.com',
-          'Content-Type': '*/*'
-        },
-        body: signedTransaction
+    try {
+      const response = await window.fetch(url, request)
+      console.log('Bity response1: ', response)
+      if (response.status !== 201) {
+        const errorData = await response.json()
+        throw new Error(errorData.errors[0].code + ' ' + errorData.errors[0].message)
       }
-      const signedTransactionResponse = await window.fetch(newURL, request)
-      LOGGER.log('Bity signedTransaction: ', JSON.stringify(signedTransaction))
-      LOGGER.log('Bity transaction message body: ', JSON.stringify(body))
-      LOGGER.log('Bity signedTransactionResponse: ', JSON.stringify(signedTransactionResponse))
-      if (signedTransactionResponse.status === 400) {
-        throw new Error('Could not complete transaction. Code: 470')
+      const newURL = url2 + response.headers.get('Location')
+      console.log('Bity newUrl: ', newURL)
+      const request2 = {
+        method: 'GET',
+        credentials: 'include'
       }
-      if (signedTransactionResponse.status === 204) {
-        const bankDetailsRequest = {
-          method: 'GET',
-          credentials: 'include'
+      const response2 = await window.fetch(newURL, request2)
+      console.log('Bity response2: ', response2)
+      if (response2.status !== 200) {
+        throw new Error('Problem confirming order: Code n200')
+      }
+      const orderData = await response2.json()
+      console.log('Bity orderData: ', orderData)
+      if (orderData.message_to_sign) {
+        const { signature_submission_url, body } = orderData.message_to_sign
+        const signedTransaction = await this.signMessage(body)
+        const newURL = url2 + signature_submission_url
+        const request = {
+          method: 'POST',
+          headers: {
+            Host: 'exchange.api.bity.com',
+            'Content-Type': '*/*'
+          },
+          body: signedTransaction
         }
-        const detailUrl = url + '/' + orderData.id
-        const bankDetailResponse = await window.fetch(detailUrl, bankDetailsRequest)
-        if (bankDetailResponse.status === 200) {
-          const parsedResponse = await bankDetailResponse.json()
-          return parsedResponse
+        const signedTransactionResponse = await window.fetch(newURL, request)
+        console.log('Bity signedTransactionResponse: ', signedTransactionResponse)
+        if (signedTransactionResponse.status === 400) {
+          throw new Error('Could not complete transaction. Code: 470')
+        }
+        if (signedTransactionResponse.status === 204) {
+          const bankDetailsRequest = {
+            method: 'GET',
+            credentials: 'include'
+          }
+          const detailUrl = url + '/' + orderData.id
+          const bankDetailResponse = await window.fetch(detailUrl, bankDetailsRequest)
+          if (bankDetailResponse.status === 200) {
+            const parsedResponse = await bankDetailResponse.json()
+            console.log('Bity parsedResponse: ', parsedResponse)
+            return parsedResponse
+          }
         }
       }
+      return orderData
+    } catch (e) {
+      console.log('Bity error: ', e)
+      throw e
     }
-    return orderData
   }
 
   async openSafariView (url: string): Promise<mixed> {
